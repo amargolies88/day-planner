@@ -11,12 +11,33 @@ function updateTopDisplays() {
 
 //Function to update color of textfields depending on time
 function updateColor() {
-    for (let i = 9; i < moment().format("HH") && i < 18; i++) {
+    //Change class of timeblock to "past" and remove "presnet and future" if timeblock is before current hour
+    for (let i = 9; i < moment().format("H") && i < 18; i++) {
         $(".timeblock-" + i).removeClass("present future");
         $(".timeblock-" + i).addClass("past");
     }
-    $(".timeblock-" + moment().format("HH")).removeClass("past future");
-    $(".timeblock-" + moment().format("HH")).addClass("present");
+    //Change class of timeblock to "present" and remove "past" and "future" classes if timeblock is current hour
+    $(".timeblock-" + moment().format("H")).removeClass("past future");
+    $(".timeblock-" + moment().format("H")).addClass("present");
+    //Change class of timeblock to "future" and remove "past" and "present" classes if timeblock is after current hour
+    for (let i = moment().format("H") + 1; i < 18; i++) {
+        $(".timeblock-" + i).removeClass("past present");
+        $(".timeblock-" + i).addClass("future");
+    }
+}
+
+//Function for testing with simulated hour for when the current time isn't 9am-5pm
+function simulateUpdateColor(hour) {
+    for (let i = 9; i < hour && i < 18; i++) {
+        $(".timeblock-" + i).removeClass("present future");
+        $(".timeblock-" + i).addClass("past");
+    }
+    $(".timeblock-" + hour).removeClass("past future");
+    $(".timeblock-" + hour).addClass("present");
+    for (let i = hour + 1; i < 18; i++) {
+        $(".timeblock-" + i).removeClass("past present");
+        $(".timeblock-" + i).addClass("future");
+    }
 }
 
 //Function to update all time dependent elements
@@ -103,7 +124,4 @@ for (let i = 9; i < 18; i++) {
 updateTime();
 
 //Continuously update all time dependent elements every second
-setInterval(function () {
-    updateTime()
-}
-    , 1000);
+var continuousUpdate = setInterval(updateTime, 1000);
